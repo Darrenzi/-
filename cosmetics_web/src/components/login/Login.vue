@@ -3,7 +3,7 @@
     <loading :loading="loading"/>
     <el-image
       class="login-bg"
-      style="position: absolute"
+      style="position: absolute;width:100%;"
       :src="require('../../assets/home_bg.gif')"
       fit="cover"
     ></el-image>

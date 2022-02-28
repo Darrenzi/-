@@ -22,10 +22,10 @@
             <div
               class="detail-update-btn"
               @click="changeDetail"
-              v-show="type == 'detail'"
+              v-show="type != 'volunteer'"
               v-if="currentUser.role<3"
             >
-              修改/审核
+              {{type=='detail'?'修改/审核':'修改报告'}}
             </div>
             <!-- <div class="detail-update-btn" v-show="type=='report'" @click="type = 'volunteer'">
               志愿者列表
@@ -97,6 +97,7 @@
       <div class="detail-main-right">
         <transition name="el-zoom-in-top">
           <div class="detail-content-container" v-show="type == 'report'">
+            <el-image :src="require('../../assets/report.jpg')" fit="cover" style="width:100%"></el-image>
             {{ solution.report }}
             <el-empty
               description="暂无测试报告"
@@ -263,7 +264,7 @@
       </el-dialog>
 
       <!-- 修改/审核对话框 -->
-      <el-dialog title="修改/审核测试方案" :visible.sync="solutionFormVisible">
+      <el-dialog :title="type=='detail'?'修改/审核测试方案':'修改测试报告'" :visible.sync="solutionFormVisible">
         <el-form :model="solutionForm">
           <el-form-item label="产品编号" :label-width="formLabelWidth">
             <el-input
@@ -292,7 +293,7 @@
               disabled
             ></el-input>
           </el-form-item>
-          <el-form-item label="未通过原因" label-width="100" v-if="currentUser.role<2">
+          <el-form-item label="未通过原因" label-width="100" v-if="currentUser.role<2 && type=='detail'">
             <el-input
               type="textarea"
               :rows="3"
@@ -300,7 +301,7 @@
               autocomplete="off"
             ></el-input>
           </el-form-item>
-          <el-form-item label="测试方案" label-width="150">
+          <el-form-item label="测试方案" label-width="150" v-show="type=='detail'">
             <el-input
               type="textarea"
               :rows="15"
@@ -308,7 +309,7 @@
               autocomplete="off"
             ></el-input>
           </el-form-item>
-          <el-form-item label="测试报告" label-width="150">
+          <el-form-item label="测试报告" label-width="150" v-show="type=='report'">
             <el-input
               type="textarea"
               :rows="15"

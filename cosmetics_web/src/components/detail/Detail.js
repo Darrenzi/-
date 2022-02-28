@@ -202,6 +202,8 @@ export default {
         this.id = query.id;
 
         util.checkLogin(this);
+    },
+    mounted: function() {
         this.initData(1);
     }
 };

@@ -37,6 +37,14 @@
                 : "招募员"
             }}
           </div>
+
+           <div
+            class="navigation-option"
+            @click="goLogin"
+            v-if="currentUser != null"
+          >
+            退出
+          </div>
         </div>
       </div>
       <div class="home-title">Cosmetics Volunteer</div>
