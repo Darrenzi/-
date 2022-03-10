@@ -23,9 +23,16 @@
               class="detail-update-btn"
               @click="changeDetail"
               v-show="type != 'volunteer'"
-              v-if="currentUser.role<3"
+              v-if="currentUser.role < 3"
             >
-              {{type=='detail'?'修改/审核':'修改报告'}}
+              {{ type == "detail" ? "修改/审核" : "修改报告" }}
+            </div>
+            <div
+              class="detail-update-btn"
+              @click="uploadFormVisible = true"
+              v-show="type == 'report'"
+            >
+              上传/更新附件
             </div>
             <!-- <div class="detail-update-btn" v-show="type=='report'" @click="type = 'volunteer'">
               志愿者列表
@@ -68,7 +75,9 @@
               ? "已通过"
               : "已完成"
           }}
-          <div class="fail-reason" v-show="solution.status == -1">{{solution.failReason}}</div>
+          <div class="fail-reason" v-show="solution.status == -1">
+            {{ solution.failReason }}
+          </div>
         </div>
         <div class="detail-left-title">
           研发员
@@ -85,19 +94,41 @@
         </div>
         <div class="detail-left-item">{{ solution.testor }}</div>
 
-        <div class="detail-left-title" v-show="solution.status!=0">
+        <div class="detail-left-title" v-show="solution.status != 0">
           审核时间
           <div class="detail-left-title-us">
             <em>Review Time</em>
           </div>
         </div>
-        <div class="detail-left-item" v-show="solution.status!=0">{{ solution.updateAt }}</div>
+        <div class="detail-left-item" v-show="solution.status != 0">
+          {{ solution.updateAt }}
+        </div>
+
+        <div class="detail-left-title" v-show="type == 'report'">
+          附件
+          <div class="detail-left-title-us">
+            <em>Other Attachments</em>
+          </div>
+        </div>
+        <div
+          class="detail-left-item"
+          v-show="type == 'report'"
+          :style="solution.accessory == '' ? '' : 'cursor: pointer'"
+          @click="downFile"
+        >
+          {{ solution.accessory == "" ? "无" : "点击下载" }}
+        </div>
       </div>
 
       <div class="detail-main-right">
         <transition name="el-zoom-in-top">
           <div class="detail-content-container" v-show="type == 'report'">
-            <el-image :src="require('../../assets/report.jpg')" fit="cover" style="width:100%"></el-image>
+            <el-image
+              v-if="solution.photo != ''"
+              :src="STATIC_SERVER + solution.photo"
+              fit="cover"
+              style="width: 100%"
+            ></el-image>
             {{ solution.report }}
             <el-empty
               description="暂无测试报告"
@@ -172,7 +203,11 @@
                         @click="updateVolunteer(props.$index)"
                         >更新</el-button
                       >
-                      <el-button style="width: 150px" @click="deleteVolunteer(props.row.id)">删除</el-button>
+                      <el-button
+                        style="width: 150px"
+                        @click="deleteVolunteer(props.row.id)"
+                        >删除</el-button
+                      >
                     </el-form-item>
                   </el-form>
                 </template>
@@ -235,8 +270,12 @@
             ></el-input>
           </el-form-item>
           <el-form-item label="敏感肌" :label-width="formLabelWidth">
-            <el-radio v-model="volunteerForm.sensibility" label="是">是</el-radio>
-            <el-radio v-model="volunteerForm.sensibility" label="否">否</el-radio>
+            <el-radio v-model="volunteerForm.sensibility" label="是"
+              >是</el-radio
+            >
+            <el-radio v-model="volunteerForm.sensibility" label="否"
+              >否</el-radio
+            >
           </el-form-item>
           <el-form-item label="长斑" :label-width="formLabelWidth">
             <el-radio v-model="volunteerForm.spot" label="是">是</el-radio>
@@ -257,14 +296,19 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="volunteerFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="saveRecord('volunteer', volunteerForm)"
+          <el-button
+            type="primary"
+            @click="saveRecord('volunteer', volunteerForm)"
             >确 定</el-button
           >
         </div>
       </el-dialog>
 
       <!-- 修改/审核对话框 -->
-      <el-dialog :title="type=='detail'?'修改/审核测试方案':'修改测试报告'" :visible.sync="solutionFormVisible">
+      <el-dialog
+        :title="type == 'detail' ? '修改/审核测试方案' : '修改测试报告'"
+        :visible.sync="solutionFormVisible"
+      >
         <el-form :model="solutionForm">
           <el-form-item label="产品编号" :label-width="formLabelWidth">
             <el-input
@@ -273,7 +317,11 @@
               disabled
             ></el-input>
           </el-form-item>
-          <el-form-item label="状态" :label-width="formLabelWidth" v-if="currentUser.role<2">
+          <el-form-item
+            label="状态"
+            :label-width="formLabelWidth"
+            v-if="currentUser.role < 2 && type == 'detail'"
+          >
             <el-radio v-model="solutionForm.status" label="-1">未通过</el-radio>
             <el-radio v-model="solutionForm.status" label="0">未审核</el-radio>
             <el-radio v-model="solutionForm.status" label="1">已通过</el-radio>
@@ -293,7 +341,11 @@
               disabled
             ></el-input>
           </el-form-item>
-          <el-form-item label="未通过原因" label-width="100" v-if="currentUser.role<2 && type=='detail'">
+          <el-form-item
+            label="未通过原因"
+            label-width="100"
+            v-if="currentUser.role < 2 && type == 'detail'"
+          >
             <el-input
               type="textarea"
               :rows="3"
@@ -301,7 +353,11 @@
               autocomplete="off"
             ></el-input>
           </el-form-item>
-          <el-form-item label="测试方案" label-width="150" v-show="type=='detail'">
+          <el-form-item
+            label="测试方案"
+            label-width="150"
+            v-show="type == 'detail'"
+          >
             <el-input
               type="textarea"
               :rows="15"
@@ -309,7 +365,11 @@
               autocomplete="off"
             ></el-input>
           </el-form-item>
-          <el-form-item label="测试报告" label-width="150" v-show="type=='report'">
+          <el-form-item
+            label="测试报告"
+            label-width="150"
+            v-show="type == 'report'"
+          >
             <el-input
               type="textarea"
               :rows="15"
@@ -320,9 +380,38 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="solutionFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="saveSolution"
-            >确 定</el-button
-          >
+          <el-button type="primary" @click="saveSolution">确 定</el-button>
+        </div>
+      </el-dialog>
+
+      <el-dialog title="上传/更新附件" :visible.sync="uploadFormVisible">
+        <div>
+          上传现场图片
+          <input
+            type="file"
+            ref="clearFile"
+            @change="getFile($event, 'photo')"
+            multiple="multiplt"
+            class="add-file-right-input"
+            style="margin-left: 70px"
+            accept=".jpg,.jpeg,.png"
+          />
+        </div>
+        <div style="margin-top: 20px">
+          上传其他附件
+          <input
+            type="file"
+            ref="clearFile"
+            @change="getFile($event, 'accessory')"
+            multiple="multiplt"
+            class="add-file-right-input"
+            style="margin-left: 70px"
+            accept=".doc,.pdf"
+          />
+        </div>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="uploadFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click="uploadFile">确 定</el-button>
         </div>
       </el-dialog>
     </div>

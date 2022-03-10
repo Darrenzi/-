@@ -41,6 +41,12 @@ public class Solution extends BaseEntity {
     @ApiModelProperty(value = "状态", example = "1")
     private Integer status;
 
+    @ApiModelProperty(value = "附件路径")
+    private String accessory;
+
+    @ApiModelProperty(value = "现场图片路径")
+    private String photo;
+
     @TableField(exist = false)
     private Integer researcherId;
 

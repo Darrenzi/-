@@ -9,6 +9,7 @@ export default {
     },
     data: function() {
         return {
+            STATIC_SERVER: "/api/static/",
             currentPage: 1,
             updateFlag: false,
             loading: false,
@@ -17,6 +18,7 @@ export default {
             solutionFormVisible: false,
             volunteerFormVisible: false,
             testFormVisible: false,
+            uploadFormVisible: false,
             formLabelWidth: '80px',
             volunteerTotal: 10,
             volunteerForm: {
@@ -44,7 +46,13 @@ export default {
                 updateAt: "",
                 content: ""
             },
-            solution: {}
+            solution: {},
+            uploadForm: {
+                photo: null,
+                photoType: null,
+                accessory: null,
+                accessoryType: null
+            }
         }
     },
     methods: {
@@ -194,7 +202,75 @@ export default {
         changePage: function(page) {
             this.currentPage = page;
             this.initData(page);
-        }
+        },
+        getFile: function(event, type) {
+            var file = event.target.files;
+            var imgName = file[0].name;
+            var idx = imgName.lastIndexOf(".");
+            var ext = imgName.substr(idx + 1).toUpperCase();
+            ext = ext.toLowerCase();
+
+            if (type == 'photo') {
+                this.uploadForm.photo = file[0];
+                this.uploadForm.photoType = ext;
+            } else {
+                this.uploadForm.accessory = file[0];
+                this.uploadForm.accessoryType = ext;
+            }
+        },
+        downFile: function() {
+            if (this.solution.accessory == '') return;
+            window.open(this.STATIC_SERVER + this.solution.accessory);
+        },
+        uploadFile: function() {
+            this.loading = true;
+            this.uploadFormVisible = false;
+
+            var formData = new FormData();
+            formData.append('id', this.id);
+            if (this.uploadForm.photo != null) {
+                formData.append('photo', this.uploadForm.photo);
+                formData.append('photoType', this.uploadForm.photoType);
+            }
+
+            if (this.uploadForm.accessory != null) {
+                formData.append('accessory', this.uploadForm.accessory);
+                formData.append('accessoryType', this.uploadForm.accessoryType);
+            }
+
+            let config = {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
+            };
+            this.$http.post("/api/solution/upload", formData, config).then(res => {
+                    if (res.data.code == Status.SUCCESS) {
+                        this.$message({
+                            type: 'success',
+                            message: "上传成功"
+                        });
+
+                        //重新拉取数据
+                        this.initData(1);
+                    } else {
+                        this.$message.error(res.data.desc);
+                    }
+                })
+                .catch(err => {
+                    this.$message.error(err.data);
+                })
+                .finally(() => {
+                    this.uploadForm = {
+                        photo: null,
+                        photoType: null,
+                        accessory: null,
+                        accessoryType: null
+                    };
+
+                    this.loading = false;
+                })
+        },
+
     },
     created: function() {
         var query = this.$route.query;

@@ -50,6 +50,8 @@ CREATE TABLE IF NOT EXISTS `solution`
     `content`     text           DEFAULT NULL COMMENT '测试方案内容',
     `report`      text           DEFAULT NULL COMMENT '测试报告内容',
     `status`      int            DEFAULT 0 COMMENT '状态',
+    `accessory`   char(64)       DEFAULT '' COMMENT '附件路径',
+    `photo`   char(64)       DEFAULT '' COMMENT '现场照片路径',
     `create_at`   timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_at`   timestamp NULL DEFAULT NULL COMMENT '更新时间',
     PRIMARY KEY

@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="home-container">
     <loading :loading="loading" />
     <div class="home-top">
       <el-image
@@ -38,7 +38,7 @@
             }}
           </div>
 
-           <div
+          <div
             class="navigation-option"
             @click="goLogin"
             v-if="currentUser != null"
@@ -73,7 +73,7 @@
             class="main-left-option"
             :class="currentShow == 1 ? 'main-left-option-choose' : 'fcolor'"
             @click="changeData(1)"
-            v-if="currentUser.role < 3"
+            v-if="currentUser != null && currentUser.role < 3"
           >
             测试需求
           </div>
@@ -88,7 +88,7 @@
             class="main-left-option"
             :class="currentShow == 3 ? 'main-left-option-choose' : 'fcolor'"
             @click="changeData(3)"
-            v-if="currentUser.role < 3"
+            v-if="currentUser != null && currentUser.role < 3"
           >
             测试报告
           </div>
@@ -96,18 +96,24 @@
             class="main-left-option"
             :class="currentShow == 0 ? 'main-left-option-choose' : 'fcolor'"
             @click="changeData(0)"
-            v-if="currentUser.role == 0"
+            v-if="currentUser != null && currentUser.role == 0"
           >
             用户
           </div>
         </div>
-        <div class="main-left-title fcolor" v-if="currentUser.role < 2">
+        <div
+          class="main-left-title fcolor"
+          v-if="currentUser != null && currentUser.role < 2"
+        >
           可选操作
           <div class="main-left-title-us">
             <em>Optional Operation</em>
           </div>
         </div>
-        <div class="main-left-options" v-if="currentUser.role < 2">
+        <div
+          class="main-left-options"
+          v-if="currentUser != null && currentUser.role < 2"
+        >
           <div class="main-left-option fcolor" @click="addRecord">新增</div>
           <!-- <div class="main-left-option fcolor">删除</div>  -->
         </div>
@@ -138,7 +144,7 @@
                   <el-button
                     size="small"
                     @click="updateTest(index)"
-                    v-if="currentUser.role < 2"
+                    v-if="currentUser != null && currentUser.role < 2"
                     >更新</el-button
                   >
                   <!-- <el-button size="small" @click="deleteRecord('test',item.id)">删除</el-button> -->
@@ -442,58 +448,6 @@
       </div>
     </el-dialog>
 
-    <!-- 新增/更新测试需求 -->
-    <el-dialog title="新增/更新测试需求" :visible.sync="testFormVisible">
-      <el-form :model="testForm">
-        <el-form-item label="产品编号" :label-width="formLabelWidth">
-          <el-input v-model="testForm.number" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="产品名" :label-width="formLabelWidth">
-          <el-input v-model="testForm.name" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="适合年龄" :label-width="formLabelWidth">
-          <el-input v-model="testForm.age" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="研发工号" :label-width="formLabelWidth">
-          <el-input
-            v-model="testForm.researcherId"
-            autocomplete="off"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="研发员" :label-width="formLabelWidth">
-          <el-input
-            v-model="testForm.researcher"
-            autocomplete="off"
-            disabled
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="测试工号" :label-width="formLabelWidth">
-          <el-input v-model="testForm.testorId" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="测试员" :label-width="formLabelWidth">
-          <el-input
-            v-model="testForm.testor"
-            autocomplete="off"
-            disabled
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="测试功效" :label-width="formLabelWidth">
-          <el-input
-            type="textarea"
-            :rows="3"
-            v-model="testForm.effect"
-            autocomplete="off"
-          ></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="testFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="saveRecord('test', testForm)"
-          >确 定</el-button
-        >
-      </div>
-    </el-dialog>
-
     <!-- 提交测试方案对话框 -->
     <el-dialog title="提交测试方案" :visible.sync="solutionFormVisible">
       <el-form :model="solutionForm">
@@ -602,6 +556,80 @@
         <span class="scolor">ElementUI</span></em
       >
     </div>
+
+        <!-- 新增/更新测试需求 -->
+    <el-dialog title="新增/更新测试需求" :visible.sync="testFormVisible" @close="closeTestDialog">
+      <el-form :model="testForm">
+        <el-form-item label="产品编号" :label-width="formLabelWidth">
+          <el-input v-model="testForm.number" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="产品名" :label-width="formLabelWidth">
+          <el-input v-model="testForm.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="适合年龄" :label-width="formLabelWidth">
+          <el-input v-model="testForm.age" autocomplete="off"></el-input>
+        </el-form-item>
+        <!-- <el-form-item label="研发工号" :label-width="formLabelWidth">
+          <el-input
+            v-model="testForm.researcherId"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item> -->
+        <el-form-item label="研发工号" :label-width="formLabelWidth" >
+          <el-select v-model="testForm.researcherId" placeholder="请选择" @change="changeResearcher">
+              <el-option
+                v-for="item in researchers"
+                :key="item.id"
+                :label="item.id"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="研发员" :label-width="formLabelWidth">
+          <el-input
+            v-model="researcherChoose!=null?researcherChoose.username:testForm.researcher"
+            autocomplete="off"
+            disabled
+          ></el-input>
+        </el-form-item>
+        <!-- <el-form-item label="测试工号" :label-width="formLabelWidth">
+          <el-input v-model="testForm.testorId" autocomplete="off"></el-input>
+        </el-form-item> -->
+        <el-form-item label="测试工号" :label-width="formLabelWidth">
+          <el-select v-model="testForm.testorId" placeholder="请选择" @change="changeTestor">
+              <el-option
+                v-for="item in testors"
+                :key="item.id"
+                :label="item.id"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="测试员" :label-width="formLabelWidth">
+          <el-input
+            v-model="testorChoose!=null?testorChoose.username:testForm.testor"
+            autocomplete="off"
+            disabled
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="测试功效" :label-width="formLabelWidth">
+          <el-input
+            type="textarea"
+            :rows="3"
+            v-model="testForm.effect"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="testFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="saveRecord('test', testForm)"
+          >确 定</el-button
+        >
+      </div>
+    </el-dialog>
   </div>
 </template>
 

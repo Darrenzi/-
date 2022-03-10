@@ -3,7 +3,7 @@ import Status from './status'
  * instance： 组件实例
  * 检查用户是否登录
  */
-var checkLogin = function(instance) {
+var checkLogin = async function(instance) {
     if (typeof(instance.loading) != "undefined") {
         instance.loading = true;
     }

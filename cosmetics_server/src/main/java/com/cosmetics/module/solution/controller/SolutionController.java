@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cosmetics.common.bean.PageRequest;
 import com.cosmetics.common.bean.Response;
 import com.cosmetics.module.solution.entity.Solution;
+import com.cosmetics.module.solution.entity.UploadForm;
 import com.cosmetics.module.solution.service.impl.SolutionServiceImpl;
 import com.cosmetics.module.test.entity.Test;
 import com.cosmetics.module.test.service.impl.TestServiceImpl;
@@ -14,13 +15,14 @@ import com.cosmetics.module.user.service.impl.UserServiceImpl;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
 import com.cosmetics.common.controller.BaseController;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -93,6 +95,29 @@ public class SolutionController extends BaseController<Solution> {
             entity.setResearcher(researcher.getUsername());
             entity.setNumber(test.getNumber());
         }
+        return Response.success(data);
+    }
+
+    @PostMapping("/upload")
+    public Response<Object> upload(UploadForm form){
+        Map<String, String> data = new HashMap<>();
+        Solution solution = new Solution();
+        solution.setId(form.getId());
+        if(form.getAccessory() != null){
+            String path = solutionService.saveFile(form.getAccessory(), form.getAccessoryType());
+            if(path==null)return Response.fail("上传附件失败");
+            data.put("photo",path);
+            solution.setAccessory(path);
+        }
+
+        if(form.getPhoto()!=null){
+            String path = solutionService.saveFile(form.getPhoto(), form.getPhotoType());
+            if(path==null)return Response.fail("上传现场照片失败");
+            data.put("photo",path);
+            solution.setPhoto(path);
+        }
+
+        service.update(solution);
         return Response.success(data);
     }
 }

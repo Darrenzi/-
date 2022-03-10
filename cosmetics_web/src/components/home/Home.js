@@ -63,23 +63,10 @@ export default {
             reports: [],
             solutions: [],
             users: [],
-            value: "",
-            options: [{
-                value: '选项1',
-                label: '黄金糕'
-            }, {
-                value: '选项2',
-                label: '双皮奶'
-            }, {
-                value: '选项3',
-                label: '蚵仔煎'
-            }, {
-                value: '选项4',
-                label: '龙须面'
-            }, {
-                value: '选项5',
-                label: '北京烤鸭'
-            }],
+            researchers: [],
+            testors: [],
+            researcherChoose: null,
+            testorChoose: null,
         };
     },
     methods: {
@@ -285,6 +272,20 @@ export default {
             this.updateFlag = true;
             this.testFormVisible = true;
         },
+        changeResearcher: function(id) {
+            for (let i = 0; i < this.researchers.length; i++) {
+                if (this.researchers[i].id == id) this.researcherChoose = this.researchers[i];
+            }
+        },
+        changeTestor: function(id) {
+            for (let i = 0; i < this.testors.length; i++) {
+                if (this.testors[i].id == id) this.testorChoose = this.testors[i];
+            }
+        },
+        closeTestDialog: function() {
+            this.testorChoose = null;
+            this.researcherChoose = null;
+        }
     },
     created: function() {
         util.checkLogin(this);
@@ -294,5 +295,15 @@ export default {
         this.getPage("/api/test/page", 1, 'tests', 'testTotal');
         this.getPage("/api/solution/page", 1, 'solutions', 'solutionTotal');
         this.getPage("/api/solution/report/page", 1, 'reports', 'reportTotal');
+
+        this.$http.get("/api/user/role", { params: { role: 1 } })
+            .then(res => {
+                this.researchers = res.data.data;
+            })
+
+        this.$http.get("/api/user/role", { params: { role: 2 } })
+            .then(res => {
+                this.testors = res.data.data;
+            })
     }
 }
