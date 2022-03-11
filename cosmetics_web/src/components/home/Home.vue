@@ -147,7 +147,7 @@
                     v-if="currentUser != null && currentUser.role < 2"
                     >更新</el-button
                   >
-                  <!-- <el-button size="small" @click="deleteRecord('test',item.id)">删除</el-button> -->
+                  <el-button size="small" @click="deleteRecord('test',item.id)" v-if="currentUser!=null&&currentUser.role<2">删除</el-button>
                 </template>
                 <el-descriptions-item>
                   <template slot="label"> 编号 </template>
@@ -267,6 +267,20 @@
                         : ""
                     }}
                   </div>
+                   <div
+                    class="article-detail fcolor"
+                    :class="
+                      articleMouseIdx == item.id && mouseOverType == 'delete'
+                        ? 'scolor'
+                        : ''
+                    "
+                    @click="deleteRecord('solution',item.id)"
+                    @mouseover="articleMouseOver(item.id, 'delete')"
+                    @mouseleave="articleMouseOver(-1)"
+                    v-if="currentUser!=null&&(currentUser.role==0||currentUser.role==2)"
+                  >
+                    删除方案
+                  </div>
                 </div>
               </div>
             </div>
@@ -369,11 +383,11 @@
                         @click="updateUser(props.$index)"
                         >更新</el-button
                       >
-                      <!-- <el-button
+                      <el-button
                         style="width: 150px"
                         @click="deleteRecord('user', props.row.id)"
                         >删除</el-button
-                      > -->
+                      >
                     </el-form-item>
                   </el-form>
                 </template>
