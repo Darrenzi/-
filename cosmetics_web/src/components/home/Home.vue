@@ -261,7 +261,7 @@
                     @mouseleave="articleMouseOver(-1)"
                     v-show="item.status == 1"
                   >
-                    添加志愿者{{
+                    {{currentUser!=null&& (currentUser.role==0||currentUser.role==3)?'添加/':''}}查看志愿者{{
                       articleMouseIdx == item.id && mouseOverType == "volunteer"
                         ? " ▶"
                         : ""

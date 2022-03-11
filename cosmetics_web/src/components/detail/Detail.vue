@@ -23,7 +23,12 @@
               class="detail-update-btn"
               @click="changeDetail"
               v-show="type != 'volunteer'"
-              v-if="currentUser.role < 3"
+              v-if="
+                currentUser != null &&
+                ((type != 'report' && currentUser.role < 3) ||
+                  (type == 'report' && currentUser.role == 0) ||
+                  currentUser.role == 2)
+              "
             >
               {{ type == "detail" ? "修改/审核" : "修改报告" }}
             </div>
@@ -31,6 +36,10 @@
               class="detail-update-btn"
               @click="uploadFormVisible = true"
               v-show="type == 'report'"
+              v-if="
+                currentUser != null &&
+                (currentUser.role == 0 || currentUser.role == 2)
+              "
             >
               上传/更新附件
             </div>
@@ -40,7 +49,11 @@
             <div
               class="detail-update-btn"
               @click="addVolunteer"
-              v-show="type == 'volunteer'"
+              v-show="
+                type == 'volunteer' &&
+                currentUser != null &&
+                (currentUser.role == 0 || currentUser.role == 3)
+              "
             >
               新增志愿者
             </div>
@@ -129,7 +142,7 @@
               fit="cover"
               style="width: 100%"
             ></el-image>
-            {{ solution.report }}
+            <div v-html="solution.report"></div>
             <el-empty
               description="暂无测试报告"
               v-show="solution.report == ''"
@@ -138,7 +151,7 @@
         </transition>
 
         <transition name="el-zoom-in-top">
-          <div v-show="type == 'detail'">{{ solution.content }}</div>
+          <div v-show="type == 'detail'" v-html="solution.content"></div>
         </transition>
 
         <transition name="el-zoom-in-top">
@@ -201,11 +214,16 @@
                       <el-button
                         style="width: 150px"
                         @click="updateVolunteer(props.$index)"
+                        v-if="
+                          currentUser != null &&
+                          (currentUser.role == 0 || currentUser.role == 3)
+                        "
                         >更新</el-button
                       >
                       <el-button
                         style="width: 150px"
                         @click="deleteVolunteer(props.row.id)"
+                        v-if="currentUser != null && currentUser.role != 1"
                         >删除</el-button
                       >
                     </el-form-item>
@@ -320,7 +338,9 @@
           <el-form-item
             label="状态"
             :label-width="formLabelWidth"
-            v-if="currentUser.role < 2 && type == 'detail'"
+            v-if="
+              currentUser != null && currentUser.role < 2 && type == 'detail'
+            "
           >
             <el-radio v-model="solutionForm.status" label="-1">未通过</el-radio>
             <el-radio v-model="solutionForm.status" label="0">未审核</el-radio>
@@ -344,7 +364,9 @@
           <el-form-item
             label="未通过原因"
             label-width="100"
-            v-if="currentUser.role < 2 && type == 'detail'"
+            v-if="
+              currentUser != null && currentUser.role < 2 && type == 'detail'
+            "
           >
             <el-input
               type="textarea"

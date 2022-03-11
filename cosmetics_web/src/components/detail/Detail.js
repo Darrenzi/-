@@ -9,6 +9,7 @@ export default {
     },
     data: function() {
         return {
+            currentUser: null,
             STATIC_SERVER: "/api/static/",
             currentPage: 1,
             updateFlag: false,
