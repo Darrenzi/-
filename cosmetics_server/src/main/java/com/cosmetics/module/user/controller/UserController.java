@@ -74,4 +74,13 @@ public class UserController extends BaseController<User> {
         User user = service.get(id);
         return Response.success(user);
     }
+
+    @PostMapping("/search")
+    public Response<Object> search(String condition){
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like("id", condition);
+        queryWrapper.or().like("username", condition);
+
+        return Response.success(service.list(queryWrapper));
+    }
 }

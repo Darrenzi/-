@@ -8,6 +8,7 @@ export default {
     },
     data: function() {
         return {
+            searchWord: "",
             currentPage: 1,
             updateFlag: false,
             currentUser: null,
@@ -92,18 +93,18 @@ export default {
                     }
                 case 1:
                     {
-                        this.getPage("/api/test/page", 1, 'tests', 'testTotal');
+                        this.getPage("/api/test/page", page, 'tests', 'testTotal');
 
                         break;
                     }
                 case 2:
                     {
-                        this.getPage("/api/solution/page", 1, 'solutions', 'solutionTotal');
+                        this.getPage("/api/solution/page", page, 'solutions', 'solutionTotal');
                         break;
                     }
                 case 3:
                     {
-                        this.getPage("/api/solution/report/page", 1, 'reports', 'reportTotal');
+                        this.getPage("/api/solution/report/page", page, 'reports', 'reportTotal');
                         break;
                     }
             }
@@ -285,6 +286,86 @@ export default {
         closeTestDialog: function() {
             this.testorChoose = null;
             this.researcherChoose = null;
+        },
+        search: function() {
+            if (this.searchWord == '') {
+                this.$message({
+                    type: 'warning',
+                    message: "请输入关键词"
+                })
+                return;
+            }
+            this.loading = true;
+            let api = "/api";
+            let key;
+            switch (this.currentShow) {
+                case 0:
+                    {
+                        key = "user";
+                        api += "/user/";
+                        break;
+                    }
+                case 1:
+                    {
+                        key = "test";
+                        api += "/test/";
+                        break;
+                    }
+                case 2:
+                    {
+                        key = "solution";
+                        api += "/solution/";
+                        break;
+                    }
+                case 3:
+                    {
+                        key = "report";
+                        api += "/solution/";
+                        break;
+                    }
+            }
+            api += "search";
+
+            this.$http.post(api, Qs.stringify({ condition: this.searchWord }))
+                .then(res => {
+                    if (res.data.code == 1) {
+                        this[key + 'Total'] = 1;
+                        this[key + "s"] = res.data.data;
+                    } else {
+                        this.$message.error("搜索失败");
+                    }
+                }).catch(err => {
+                    console.log(err);
+                    this.$message.error("搜索失败");
+                })
+                .finally(() => {
+                    this.loading = false;
+                })
+        },
+        clearSearch: function() {
+            switch (this.currentShow) {
+                case 0:
+                    {
+                        this.getPage("/api/user/page", 1, 'users', 'userTotal')
+                        break;
+                    }
+                case 1:
+                    {
+                        this.getPage("/api/test/page", 1, 'tests', 'testTotal');
+
+                        break;
+                    }
+                case 2:
+                    {
+                        this.getPage("/api/solution/page", 1, 'solutions', 'solutionTotal');
+                        break;
+                    }
+                case 3:
+                    {
+                        this.getPage("/api/solution/report/page", 1, 'reports', 'reportTotal');
+                        break;
+                    }
+            }
         }
     },
     created: function() {

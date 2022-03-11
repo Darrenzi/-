@@ -9,6 +9,7 @@ import com.cosmetics.module.solution.entity.Solution;
 import com.cosmetics.module.solution.mapper.SolutionMapper;
 import com.cosmetics.module.solution.service.ISolutionService;
 import com.cosmetics.common.service.BaseService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

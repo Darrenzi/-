@@ -52,16 +52,16 @@
 
     <div class="home-main">
       <div class="home-main-left hidden-md-and-down">
-        <!-- <div class="main-left-title fcolor">
+        <div class="main-left-title fcolor">
           关键词搜索
           <div class="main-left-title-us">
             <em>Search Something By keywords</em>
           </div>
         </div>
         <div class="search">
-          <el-input></el-input>
-          <el-button type="primary" style="margin-left: 10px">搜索</el-button>
-        </div> -->
+          <el-input clearable v-model="searchWord" @clear="clearSearch" placeholder="输入关键词：编号/名字"></el-input>
+          <el-button type="primary" style="margin-left: 10px" @click="search">搜索</el-button>
+        </div>
         <div class="main-left-title fcolor">
           数据类别
           <div class="main-left-title-us">

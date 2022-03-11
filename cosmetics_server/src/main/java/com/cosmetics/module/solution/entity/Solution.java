@@ -47,6 +47,7 @@ public class Solution extends BaseEntity {
     @ApiModelProperty(value = "现场图片路径")
     private String photo;
 
+    @ApiModelProperty(example = "1")
     @TableField(exist = false)
     private Integer researcherId;
 
@@ -56,6 +57,7 @@ public class Solution extends BaseEntity {
     @TableField(exist = false)
     private String testor;
 
+    @ApiModelProperty(example = "1")
     @TableField(exist = false)
     private Integer testorId;
 

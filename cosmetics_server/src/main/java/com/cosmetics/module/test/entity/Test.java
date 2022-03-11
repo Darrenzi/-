@@ -36,10 +36,10 @@ public class Test extends BaseEntity {
     @ApiModelProperty(value = "产品功效")
     private String effect;
 
-    @ApiModelProperty(value = "状态")
+    @ApiModelProperty(value = "状态", example = "1")
     private Integer status;
 
-    @ApiModelProperty(value = "研发员id")
+    @ApiModelProperty(value = "研发员id", example = "1")
     private Integer researcherId;
 
     @TableField(exist = false)
@@ -48,7 +48,7 @@ public class Test extends BaseEntity {
     @TableField(exist = false)
     private String testor;
 
-    @ApiModelProperty(value = "测试员id")
+    @ApiModelProperty(value = "测试员id", example = "1")
     private Integer testorId;
 
     @ApiModelProperty(value = "创建时间")

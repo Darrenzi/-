@@ -3,6 +3,7 @@ D:\美妆测试系统\cosmetics_server\src\main\java\com\cosmetics\module\volunt
 D:\美妆测试系统\cosmetics_server\src\main\java\com\cosmetics\module\solution\controller\SolutionController.java
 D:\美妆测试系统\cosmetics_server\src\main\java\com\cosmetics\module\test\service\impl\TestServiceImpl.java
 D:\美妆测试系统\cosmetics_server\src\main\java\com\cosmetics\config\MybatisPlusConfig.java
+D:\美妆测试系统\cosmetics_server\src\main\java\com\cosmetics\module\solution\entity\UploadForm.java
 D:\美妆测试系统\cosmetics_server\src\main\java\com\cosmetics\config\RestTemplateConfig.java
 D:\美妆测试系统\cosmetics_server\src\main\java\com\cosmetics\module\solution\service\impl\SolutionServiceImpl.java
 D:\美妆测试系统\cosmetics_server\src\main\java\com\cosmetics\common\controller\BaseController.java
@@ -25,6 +26,7 @@ D:\美妆测试系统\cosmetics_server\src\main\java\com\cosmetics\module\volunt
 D:\美妆测试系统\cosmetics_server\src\main\java\com\cosmetics\module\user\service\IUserService.java
 D:\美妆测试系统\cosmetics_server\src\main\java\com\cosmetics\module\test\mapper\TestMapper.java
 D:\美妆测试系统\cosmetics_server\src\main\java\com\cosmetics\Application.java
+D:\美妆测试系统\cosmetics_server\src\main\java\com\cosmetics\config\WebConfig.java
 D:\美妆测试系统\cosmetics_server\src\main\java\com\cosmetics\common\bean\Response.java
 D:\美妆测试系统\cosmetics_server\src\main\java\com\cosmetics\module\user\entity\User.java
 D:\美妆测试系统\cosmetics_server\src\main\java\com\cosmetics\common\entity\BaseEntity.java
