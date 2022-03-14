@@ -138,7 +138,7 @@
                 border
               >
                 <template slot="extra">
-                  <el-button size="small" @click="commitSolution(item)"
+                  <el-button size="small" @click="commitSolution(item)" v-if="currentUser!=null && (currentUser.role==0||currentUser.role==2)"
                     >提交测试方案</el-button
                   >
                   <el-button
@@ -245,6 +245,24 @@
                   >
                     查看/审核{{
                       articleMouseIdx == item.id && mouseOverType == "detail"
+                        ? " ▶"
+                        : ""
+                    }}
+                  </div>
+                  <div
+                    class="article-detail fcolor"
+                    :class="
+                      articleMouseIdx == item.id && mouseOverType == 'report'
+                        ? 'scolor'
+                        : ''
+                    "
+                    @click="goDetail(item.id, 'report')"
+                    @mouseover="articleMouseOver(item.id, 'report')"
+                    @mouseleave="articleMouseOver(-1)"
+                    v-if="item.status>0"
+                  >
+                    提交报告{{
+                      articleMouseIdx == item.id && mouseOverType == "report"
                         ? " ▶"
                         : ""
                     }}
@@ -394,9 +412,14 @@
               </el-table-column>
               <el-table-column prop="createAt" label="创建日期" width="180">
               </el-table-column>
-              <el-table-column prop="id" label="工号" width="180">
+              <el-table-column prop="id" label="工号" width="120">
               </el-table-column>
               <el-table-column prop="username" label="姓名" width="180">
+              </el-table-column>
+              <el-table-column label="权限" width="180">
+                <template slot-scope="scope">
+                  {{scope.row.role==0?'管理员':scope.row.role==1?'研发员':scope.row.role==2?'测试员':'招募员'}}
+                </template>
               </el-table-column>
               <el-table-column prop="phone" label="电话号"> </el-table-column>
             </el-table>
@@ -446,6 +469,10 @@
         </el-form-item>
         <el-form-item label="邮箱" :label-width="formLabelWidth">
           <el-input v-model="userForm.email" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="性别" :label-width="formLabelWidth">
+          <el-radio v-model="userForm.gender" label="0">女</el-radio>
+          <el-radio v-model="userForm.gender" label="1">男</el-radio>
         </el-form-item>
         <el-form-item label="岗位" :label-width="formLabelWidth">
           <el-radio v-model="userForm.role" label="0">管理员</el-radio>
@@ -545,7 +572,10 @@
             show-password
           ></el-input>
         </el-form-item>
-
+        <el-form-item label="性别" :label-width="formLabelWidth">
+          <el-radio v-model="personForm.gender" label="0">女</el-radio>
+          <el-radio v-model="personForm.gender" label="1">男</el-radio>
+        </el-form-item>
         <el-form-item label="电话" :label-width="formLabelWidth">
           <el-input v-model="personForm.phone" autocomplete="off"></el-input>
         </el-form-item>

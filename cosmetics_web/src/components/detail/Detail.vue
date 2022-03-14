@@ -30,7 +30,7 @@
                   currentUser.role == 2)
               "
             >
-              {{ type == "detail" ? "修改/审核" : "修改报告" }}
+              {{ type == "detail" ? "修改/审核" : solution.report==''?"提交报告":"修改报告" }}
             </div>
             <div
               class="detail-update-btn"
@@ -324,7 +324,7 @@
 
       <!-- 修改/审核对话框 -->
       <el-dialog
-        :title="type == 'detail' ? '修改/审核测试方案' : '修改测试报告'"
+        :title="type == 'detail' ? '修改/审核测试方案' : solution!=null&&solution.report==''?'提交报告':'修改测试报告'"
         :visible.sync="solutionFormVisible"
       >
         <el-form :model="solutionForm">

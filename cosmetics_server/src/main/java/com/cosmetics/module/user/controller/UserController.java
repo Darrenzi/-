@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -39,7 +40,11 @@ public class UserController extends BaseController<User> {
             query.eq("email", un);
         }
 
-        User user = service.list(query).get(0);
+        List<User> list = service.list(query);
+        if(list.isEmpty()){
+            return Response.fail("用户不存在");
+        }
+        User user = list.get(0);
         if(user!= null && user.getPassword().equals(pd)) {
             HttpSession session = request.getSession();
             session.setAttribute("id", user.getId());

@@ -65,9 +65,10 @@ export default {
             //获取方案数据
             this.$http.get("/api/solution/get", { params: { id: this.id } }).then(res => {
                     if (res.data.code == Status.SUCCESS) {
-
                         this.solution = res.data.data;
-
+                        if (this.solution.report == '' && this.type == 'report') {
+                            this.changeDetail();
+                        }
                     } else {
                         this.$message.error(res.data.desc);
                     }
